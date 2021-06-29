@@ -1,0 +1,11 @@
+{
+    "DbConnect": {
+        "Port": "5432", 
+        "Host":"localhost",
+        "User":"postgres",
+        "Password":"dudgus25",
+        "DatabaseName":"poll_server",
+        "Sslmode":"disable",
+        "TimeZone":"Asia/Seoul"
+    }
+}
