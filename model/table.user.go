@@ -5,15 +5,17 @@ import (
 )
 
 type User struct {
-	ID          uint      `gorm:"primarykey"`
-	UserId      string    `gorm:"not_null;uniqueindex"`
-	Password    string    `gorm:"<-"`
-	Email       string    `gorm:"<-"`
-	FirstName   string    `gorm:"<-"`
-	LastName    string    `gorm:"<-"`
-	IsStaff     string    `gorm:"<-"`
-	IsActive    string    `gorm:"<-"`
+	ID          uint   `gorm:"primarykey"`
+	UserId      string `gorm:"not_null;uniqueindex"`
+	Password    string `gorm:"<-"`
+	Email       string `gorm:"<-"`
+	FirstName   string `gorm:"<-"`
+	LastName    string `gorm:"<-"`
+	IsActive    bool
 	LastLogin   time.Time `gorm:"<-"`
+	CreatedDate time.Time `gorm:"autoCreateTime:milli"`
+	UpdatedDate time.Time `gorm:"autoUpdateTime:milli"`
+	LoginCount  uint      `gorm:"type:smallint"`
 	IsSuperuser bool
 }
 

@@ -13,7 +13,12 @@ type Notice struct {
 	QuestionId uint `gorm:"index"`
 	IsError    bool
 	IsChecked  bool
-	UpdateDate time.Time `gorm:"autoUpdateTime:milli"`
+
+	CreatedDate   time.Time `gorm:"autoCreateTime:milli"`
+	UpdatedDate   time.Time `gorm:"autoUpdateTime:milli"`
+	ToUsersFkey   User      `gorm:"foreignKey:ToUserId"`
+	FromUsersFkey User      `gorm:"foreignKey:FromUserId"`
+	ProjectFkey   Project   `gorm:"foreignKey:ProjectId"`
 }
 
 func (Notice) TableName() string {

@@ -39,8 +39,19 @@ func ConnectDatabse() *gorm.DB {
 }
 
 func MigrateDatabase(db *gorm.DB) {
-	migrator := db.Migrator()
-	tableList := make([]interface{}, 0)
-	tableList = append(tableList, &User{})
-	migrator.CreateTable(tableList...)
+
+	db.Transaction(func(tx *gorm.DB) error {
+		migrator := tx.Migrator()
+		tableList := make([]interface{}, 0)
+		tableList = append(tableList, &User{}, &Project{}, &Task{}, &ExampleForm{}, &ExampleLogic{}, &FormAttr{})
+		tableList = append(tableList, &LogicConnection{}, &Logic{}, &Notice{}, &QuestionContent{}, &QuestionExtra{}, &QuestionLayout{}, &QuestionLogic{})
+		tableList = append(tableList, &QuestionTemplate{}, &QuestionType{}, &Question{}, &Static{})
+		err := migrator.AutoMigrate(tableList...)
+
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
 }

@@ -14,7 +14,8 @@ type Data struct {
 	QuestionId  uint `gorm:"index"`
 	SurveyData  datatypes.JSON
 	DateHistory datatypes.JSON
-	UpdateDate  time.Time `gorm:"autoUpdateTime:milli"`
+	CreatedDate time.Time `gorm:"autoCreateTime:milli"`
+	UpdatedDate time.Time `gorm:"autoUpdateTime:milli"`
 }
 
 func (Data) TableName() string {
