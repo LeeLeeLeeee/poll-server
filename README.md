@@ -16,6 +16,10 @@
     #      - gorm.io/driver/postgres => for database connecting
     #      - gorm.io/datatypes => for json
     # gin  - web Framework // Fiber?
+    # godotenv - env file
+    # dgrijalva/jwt-go - jwt generator
+    # redis/v7 - Memory  // background start cli =>  redis-server --daemonize yes
+    # uuid     - uuid generator
 ```
 
 #### DB setting 

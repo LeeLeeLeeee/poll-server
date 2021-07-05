@@ -9,6 +9,7 @@ import (
 	"runtime"
 	"strings"
 
+	"github.com/go-redis/redis/v7"
 	"github.com/tkanos/gonfig"
 )
 
@@ -25,6 +26,12 @@ type DbConnect struct {
 	Sslmode      string
 	TimeZone     string
 }
+
+type Redis struct {
+	RedisClient *redis.Client
+}
+
+var RedisClient *Redis
 
 func getFileName(version_name string) string {
 
@@ -49,5 +56,28 @@ func GetConfig() Configuration {
 		os.Exit(500)
 	}
 	return configuration
+}
 
+func RedisInit() {
+	dsn := os.Getenv("REDIS_DSN")
+
+	if len(dsn) == 0 {
+		dsn = "localhost:6379"
+	}
+
+	client := redis.NewClient(&redis.Options{
+		Addr: dsn,
+	})
+
+	_, err := client.Ping().Result()
+
+	if err != nil {
+		panic(err)
+	}
+	RedisClient = &Redis{RedisClient: client}
+}
+
+func GetRedis() *Redis {
+
+	return RedisClient
 }

@@ -1,1 +1,5 @@
-/config.local.json
+/*.json
+/*.env
+/.vscode/**
+/__debug_bin
+/dump.rdb
