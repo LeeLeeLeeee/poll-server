@@ -8,7 +8,6 @@ import (
 	"github.com/leeleeleeee/web-app/auth"
 	"github.com/leeleeleeee/web-app/conf"
 	c "github.com/leeleeleeee/web-app/controller"
-	"github.com/leeleeleeee/web-app/middleware"
 	m "github.com/leeleeleeee/web-app/model"
 )
 
@@ -37,25 +36,26 @@ func Logger() g.HandlerFunc {
 
 func main() {
 	err := godotenv.Load()
-
+	pg := &m.Postgres{}
 	if err != nil {
 		panic("Please create a .env file")
 	}
 	conf.RedisInit()
 
-	db := m.ConnectDatabse()
+	pg.ConnectDatabse()
+	pg.MigrateDatabase()
+	m.Gdb = pg.GetDB()
 	router := g.Default()
 	router.Use(Logger())
+
 	defer func() {
 
 	}()
 
-	m.MigrateDatabase(db)
-
 	authorized := router.Group("/api/auth")
 	c.DoInit(authorized, auth.AuthController{})
 
-	api := router.Group("/api/v1", middleware.CheckJwt())
+	api := router.Group("/api/v1", auth.CheckJwt())
 	c.DoInit(api, c.UserController{})
 
 	router.Run(":8080")

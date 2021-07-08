@@ -9,7 +9,14 @@ import (
 	"gorm.io/gorm"
 )
 
-func ConnectDatabse() *gorm.DB {
+// Global Db Connection
+var Gdb *gorm.DB
+
+type Postgres struct {
+	db *gorm.DB
+}
+
+func (pg *Postgres) ConnectDatabse() {
 	configuration := conf.GetConfig()
 	connectInfo := configuration.DbConnect
 
@@ -33,14 +40,13 @@ func ConnectDatabse() *gorm.DB {
 		log.Panic(err)
 		os.Exit(500)
 	}
-	db.Migrator()
 
-	return db
+	pg.db = db
 }
 
-func MigrateDatabase(db *gorm.DB) {
-
-	db.Transaction(func(tx *gorm.DB) error {
+func (pg *Postgres) MigrateDatabase() {
+	db := pg.GetDB()
+	err := db.Transaction(func(tx *gorm.DB) error {
 		migrator := tx.Migrator()
 		tableList := make([]interface{}, 0)
 		tableList = append(tableList, &User{}, &Project{}, &Task{}, &ExampleForm{}, &ExampleLogic{}, &FormAttr{})
@@ -54,4 +60,13 @@ func MigrateDatabase(db *gorm.DB) {
 
 		return nil
 	})
+
+	if err != nil {
+		log.Panic(err)
+		os.Exit(500)
+	}
+}
+
+func (pg *Postgres) GetDB() *gorm.DB {
+	return pg.db
 }

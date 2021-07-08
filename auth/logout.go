@@ -5,11 +5,10 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/leeleeleeee/web-app/conf"
-	"github.com/leeleeleeee/web-app/middleware"
 )
 
 func LogOut(c *gin.Context) {
-	au, err := middleware.ExtractTokenMetadata(c.Request)
+	au, err := ExtractTokenMetadata(c)
 
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, "unauthorized")

@@ -1,22 +1,26 @@
 package controller
 
 import (
-	"net/http"
-	"strconv"
-
 	"github.com/gin-gonic/gin"
+	"github.com/leeleeleeee/web-app/model"
 )
 
-type UserController struct{}
-
-func (uc UserController) Init(v1 *gin.RouterGroup, e ...interface{}) {
-	v1.GET("/someGet", uc.someGetFunc)
-	v1.GET("/someGet2", uc.someGetFunc)
-	v1.GET("/someGet3", uc.someGetFunc)
+type UserController struct {
+	UserQuerySet model.UserQuerySet
 }
 
-func (UserController) someGetFunc(c *gin.Context) {
-	example := c.MustGet("userID").(uint64)
-	responseContent := "Hello " + strconv.Itoa(int(example))
-	c.String(http.StatusOK, responseContent)
+func (uc UserController) Init(v1 *gin.RouterGroup, e ...interface{}) {
+	v1.GET("/user/:id", uc.getUserId)
+}
+
+// func (UserController) someGetFunc(c *gin.Context) {
+// 	example := c.MustGet("userID").(uint64)
+// 	responseContent := "Hello " + strconv.Itoa(int(example))
+// 	c.String(http.StatusOK, responseContent)
+// }
+
+func (u UserController) getUserId(c *gin.Context) {
+	id := c.Param("id")
+	qs := u.UserQuerySet
+	qs.SelectOne(id)
 }

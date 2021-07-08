@@ -4,6 +4,7 @@ import "time"
 
 type QuestionTemplate struct {
 	ID                 uint      `gorm:"primarykey"`
+	QuestionId         uint      `gorm:"primarykey"`
 	QuestionType       string    `gorm:"type:varchar(1)"`
 	TitleFcolor        string    `gorm:"type:varchar(20)"`
 	TitleBgcolor       string    `gorm:"type:varchar(20)"`
@@ -14,6 +15,7 @@ type QuestionTemplate struct {
 	CreatedDate        time.Time `gorm:"autoCreateTime:milli"`
 	UpdatedDate        time.Time `gorm:"autoUpdateTime:milli"`
 
+	QuestionFkey        Question        `gorm:"foreignKey:QuestionId"`
 	QuestionLayoutFkey  QuestionLayout  `gorm:"foreignKey:LayoutId"`
 	QuestionContentFkey QuestionContent `gorm:"foreignKey:ContentId"`
 	QuestionTypeFkey    QuestionType    `gorm:"foreignKey:QuestionType"`

@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"log"
 	"net/http"
 	"os"
 	"strconv"
@@ -50,14 +49,15 @@ func LogIn(c *gin.Context) {
 		c.JSON(http.StatusUnprocessableEntity, saveErr.Error())
 	}
 
-	resToken := map[string]string{
-		"access_token": token.AccessToken,
-		"refesh_token": token.RefreshToken,
-	}
+	// resToken := map[string]string{
+	// 	"access_token": token.AccessToken,
+	// 	"refesh_token": token.RefreshToken,
+	// }
 
-	log.Println(token)
+	c.SetCookie("access_token", token.AccessToken, int(time.Minute)*30, "/", "/localhost", false, true)
+	c.SetCookie("refresh_token", token.RefreshToken, int(time.Minute)*30, "/", "/localhost", false, true)
 
-	c.JSON(http.StatusOK, resToken)
+	c.JSON(http.StatusOK, "success")
 
 }
 
@@ -92,8 +92,9 @@ func createToken(userid uint64) (*TokenDetail, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	rtClaims := jwt.MapClaims{}
-	rtClaims["refresh_uuid"] = td.RefreshToken
+	rtClaims["refresh_uuid"] = td.RefreshUuid
 	rtClaims["user_id"] = userid
 	rtClaims["exp"] = td.RtExpires
 
