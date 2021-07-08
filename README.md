@@ -2,13 +2,13 @@
 
 ### API server with Golang
 
-#### need 
+##### need 
 ```bash
     # postgresql
     # git
 ```
 
-#### installed library
+##### installed library
 
 ```bash
     # gorm - ORM library
@@ -22,37 +22,25 @@
     # uuid     - uuid generator
 ```
 
-#### DB setting 
+##### DB setting 
 ```bash
     # uuid extension 설치
     # CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 ```
 
-#### Table list
-- User
-    - 회원 관리
-- Notice
-    - 문항 요청 관리
-- Data
-    - 데이터 관리
-- Logic
-    - 로직 관리
-- Logic-Connect
-    - 그룹 로직 관리 (ex : (a = 1) or (a = 2) )
-- Question-Type
-    - 문항 타입
-- Question-Template 
-    - 문항 템플릿
-- Form-Attr
-    - 문항 속성 관리
-- Question-Form
-    - 문항 보기 관리
-- Question-Extra
-    - 문항 추가 사항 관리 (정적 파일, 추가 필요 코딩)
-- Question-Extra
-    - 문항 추가 사항 관리 (정적 파일, 추가 필요 코딩)
+##### .env 
 
-#### Run App
+```bash
+    mkdir .env # in root directory
+    
+    # write key & value
+    JWT_ACCESS_SECRET=YOURKEY
+    JWT_REFRESH_SECRET=YOURKEY
+
+```
+
+
+##### Run App
 ```bash
     # dev
     go run main.go
