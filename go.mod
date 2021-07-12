@@ -5,6 +5,7 @@ go 1.16
 require (
 	github.com/GoAdminGroup/go-admin v1.2.23
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
+	github.com/fatih/structs v1.1.0 // indirect
 	github.com/ghodss/yaml v1.0.0 // indirect
 	github.com/gin-gonic/gin v1.7.2
 	github.com/go-redis/redis/v7 v7.4.0 // indirect

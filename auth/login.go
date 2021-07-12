@@ -9,50 +9,44 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/leeleeleeee/web-app/conf"
+	"github.com/leeleeleeee/web-app/lib"
+	"github.com/leeleeleeee/web-app/model"
 	"github.com/twinj/uuid"
 )
 
-type loginInfo struct {
-	ID       uint64 `json:"id"`
-	Username string `json:"username"`
+type LoginInfo struct {
+	UserId   string `json:"user_id"`
 	Password string `json:"password"`
 }
 
-var user = loginInfo{
-	Username: "username",
-	Password: "password",
-}
-
 func LogIn(c *gin.Context) {
-	var u loginInfo
+	var u *LoginInfo
 
 	if err := c.ShouldBindJSON(&u); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, "Invalid json")
 		return
 	}
 
-	if !checkUserInfo(u) {
+	var ok bool
+	var userId uint64
+
+	if ok, userId = checkUserInfo(u); !ok {
 		c.JSON(http.StatusUnauthorized, "Login is faild")
 		return
 	}
 
-	token, err := createToken(u.ID)
+	token, err := createToken(userId)
 
 	if err != nil {
 		c.JSON(http.StatusUnprocessableEntity, err.Error())
 		return
 	}
 
-	saveErr := saveAuthKeyToRedis(u.ID, token)
+	saveErr := saveAuthKeyToRedis(userId, token)
 
 	if saveErr != nil {
 		c.JSON(http.StatusUnprocessableEntity, saveErr.Error())
 	}
-
-	// resToken := map[string]string{
-	// 	"access_token": token.AccessToken,
-	// 	"refesh_token": token.RefreshToken,
-	// }
 
 	c.SetCookie("access_token", token.AccessToken, int(time.Minute)*30, "/", "/localhost", false, true)
 	c.SetCookie("refresh_token", token.RefreshToken, int(time.Minute)*30, "/", "/localhost", false, true)
@@ -61,12 +55,22 @@ func LogIn(c *gin.Context) {
 
 }
 
-func checkUserInfo(u loginInfo) bool {
-	if user.Username != u.Username || user.Password != u.Password {
-		return false
+func checkUserInfo(u *LoginInfo) (ok bool, userId uint64) {
+	qs := model.UserQuerySet{}
+	var encryptErr error
+	u.Password, encryptErr = lib.EncryptSha256(u.Password)
+
+	if encryptErr != nil {
+		return false, 0
 	}
 
-	return true
+	uid, err := qs.CheckLogin(u.UserId, u.Password)
+
+	if err != nil {
+		return false, 0
+	}
+
+	return true, uid
 }
 
 func createToken(userid uint64) (*TokenDetail, error) {

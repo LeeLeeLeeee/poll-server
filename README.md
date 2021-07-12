@@ -6,6 +6,7 @@
 ```bash
     # postgresql
     # git
+    # redis
 ```
 
 ##### installed library

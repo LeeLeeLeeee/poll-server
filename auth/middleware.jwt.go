@@ -85,20 +85,6 @@ func VerifyToken(c *gin.Context) (*jwt.Token, error) {
 	return token, nil
 }
 
-func CheckTokenValid(c *gin.Context) error {
-	token, err := VerifyToken(c)
-	if err != nil {
-		log.Println(err)
-		return err
-	}
-
-	if !token.Valid {
-		log.Println(err)
-		return err
-	}
-	return nil
-}
-
 func ExtractTokenMetadata(c *gin.Context) (*AccessDetails, error) {
 	token, err := VerifyToken(c)
 
