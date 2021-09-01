@@ -11,7 +11,6 @@ import (
 type UserForm struct {
 	ID          string `json:"id" form:"id"`
 	UserId      string `json:"user_id" form:"user_id"`
-	Email       string `json:"email" form:"email"`
 	FirstName   string `json:"firstname" form:"firstname"`
 	LastName    string `json:"lastname" form:"lastname"`
 	CreatedDate string `json:"created_date" form:"created_date"`
@@ -69,11 +68,11 @@ func (u UserQuerySet) Select(param interface{}) (res *[]UserForm, err error) {
 	PageInfo, pfok := s.FieldOk("PageInfo")
 	UserFilter, ufok := s.FieldOk("UserFileter")
 
-	if !pfok {
+	if !pfok || PageInfo == nil {
 		p = defaultPageInfo
 	} else {
 		p, pok = PageInfo.Value().(*Pagetype)
-		if !pok {
+		if !pok || p == nil {
 			p = defaultPageInfo
 		}
 	}
@@ -97,6 +96,12 @@ func (u UserQuerySet) Select(param interface{}) (res *[]UserForm, err error) {
 }
 
 func (u UserQuerySet) InsertOne(data *User) error {
+	var count int64
+	Gdb.Model(&User{}).Where("user_id = ?", data.UserId).Count(&count)
+
+	if count > 0 {
+		return errors.New("already exist")
+	}
 
 	result := Gdb.Create(data)
 

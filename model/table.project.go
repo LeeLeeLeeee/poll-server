@@ -8,7 +8,6 @@ type Project struct {
 	EndDate            string `gorm:"type:date"`
 	ProjectTitle       string `gorm:"type:varchar(250)"`
 	RegisterId         uint
-	ProjectType        string `gorm:"type:varchar(100)"`
 	ProjectDescription string
 	ProjectStatus      string    `gorm:"type:varchar(1);check:project_status_checker, project_status in ('1', '2', '3'); default:'1' "`
 	CreatedDate        time.Time `gorm:"autoCreateTime:milli"`

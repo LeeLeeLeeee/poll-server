@@ -195,7 +195,7 @@ func RefreshToken(c *gin.Context) (*AccessDetails, error) {
 		if saveErr != nil {
 			return nil, errors.New(saveErr.Error())
 		}
-		c.SetCookie("access_token", ts.AccessToken, int(time.Minute)*20, "/", "/localhost", false, true)
+		c.SetCookie("access_token", ts.AccessToken, int(time.Minute)*20, "/", "/localhost", false, false)
 		c.SetCookie("refresh_token", ts.RefreshToken, int(time.Hour)*24*7, "/", "/localhost", false, true)
 
 		return &AccessDetails{

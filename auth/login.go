@@ -48,10 +48,13 @@ func LogIn(c *gin.Context) {
 		c.JSON(http.StatusUnprocessableEntity, saveErr.Error())
 	}
 
-	c.SetCookie("access_token", token.AccessToken, int(time.Minute)*30, "/", "/localhost", false, true)
-	c.SetCookie("refresh_token", token.RefreshToken, int(time.Minute)*30, "/", "/localhost", false, true)
+	c.SetCookie("access_token", token.AccessToken, int(time.Minute)*20, "/", "/localhost", false, false)
+	c.SetCookie("refresh_token", token.RefreshToken, int(time.Hour)*24*7, "/", "/localhost", false, true)
 
-	c.JSON(http.StatusOK, "success")
+	c.JSON(http.StatusOK, gin.H{
+		"msg":    "success",
+		"userid": userId,
+	})
 
 }
 

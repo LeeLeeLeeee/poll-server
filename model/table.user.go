@@ -2,15 +2,16 @@ package model
 
 import (
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type User struct {
 	ID          uint      `gorm:"primarykey" json:"id"`
-	UserId      string    `gorm:"not_null;uniqueindex" json:"user_id" binding:"required"`
-	Password    string    `gorm:"<-" json:"password" binding:"required"`
-	Email       string    `gorm:"<-" json:"email" binding:"required"`
-	FirstName   string    `gorm:"<-" json:"firstname" binding:"required"`
-	LastName    string    `gorm:"<-" json:"lastname" binding:"required"`
+	UserId      string    `gorm:"not_null;uniqueindex" json:"user_id" `
+	Password    string    `gorm:"<-" json:"password" `
+	FirstName   string    `gorm:"<-" json:"firstname" `
+	LastName    string    `gorm:"<-" json:"lastname" `
 	IsActive    bool      `gorm:"default:true" json:"is_active"`
 	LastLogin   time.Time `gorm:"autoCreateTime" json:"last_login"`
 	CreatedDate time.Time `gorm:"autoUpdateTime" json:"created_date"`
@@ -21,4 +22,11 @@ type User struct {
 
 func (User) TableName() string {
 	return "tb_user"
+}
+
+func (u User) BeforeCreate(tx *gorm.DB) error {
+	/*
+		Something Logic..
+	*/
+	return nil
 }

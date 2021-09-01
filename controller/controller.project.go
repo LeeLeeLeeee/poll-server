@@ -4,40 +4,38 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/leeleeleeee/web-app/auth"
-	"github.com/leeleeleeee/web-app/lib"
 	"github.com/leeleeleeee/web-app/model"
 )
 
-type UserController struct {
-	UserQuerySet model.UserQuerySet
+type ProjectController struct {
+	ProjectQuerySet model.ProjectQuerySet
 }
 
-func (uc UserController) Init(v1 *gin.RouterGroup, e ...interface{}) {
+func (c ProjectController) Init(v1 *gin.RouterGroup, e ...interface{}) {
 
-	v1.GET("/user", uc.getUser, auth.CheckJwt())
-	v1.GET("/user/:id", uc.getUserOne, auth.CheckJwt())
-	v1.POST("/user", uc.insertUser)
-	v1.POST("/userMany", uc.insertUserMany, auth.CheckJwt())
-	v1.DELETE("/user/:id", uc.deleteOne, auth.CheckJwt())
-	v1.PUT("/user/:id", uc.updateOne, auth.CheckJwt())
+	v1.GET("/project", c.getProject)
+	v1.GET("/project/:id", c.getProjectOne)
+	v1.POST("/project", c.insertProject)
+	v1.POST("/projectMany", c.insertProjectMany)
+	v1.DELETE("/project/:id", c.deleteOne)
+	v1.PUT("/project/:id", c.updateOne)
 
 }
 
-func (u UserController) getUser(c *gin.Context) {
-	type userParam struct {
-		PageInfo    *model.Pagetype
-		UserFileter *model.UserForm
+func (p ProjectController) getProject(c *gin.Context) {
+	type projectParam struct {
+		PageInfo      *model.Pagetype
+		ProjectFilter *model.ProjectForm
 	}
 
-	var param *userParam
+	var param *projectParam
 
 	if err := c.ShouldBindQuery(&param); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	qs := u.UserQuerySet
+	qs := p.ProjectQuerySet
 	result, err := qs.Select(param)
 
 	if err != nil {
@@ -49,9 +47,9 @@ func (u UserController) getUser(c *gin.Context) {
 
 }
 
-func (u UserController) getUserOne(c *gin.Context) {
+func (u ProjectController) getProjectOne(c *gin.Context) {
 	id := c.Param("id")
-	qs := u.UserQuerySet
+	qs := u.ProjectQuerySet
 	result, err := qs.SelectOne(id)
 
 	if err != nil {
@@ -62,23 +60,15 @@ func (u UserController) getUserOne(c *gin.Context) {
 	c.JSON(http.StatusOK, result)
 }
 
-func (u UserController) insertUser(c *gin.Context) {
-	var json *model.User
-	var encryptErr error
+func (u ProjectController) insertProject(c *gin.Context) {
+	var json *model.Project
 
 	if err := c.ShouldBindJSON(&json); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	json.Password, encryptErr = lib.EncryptSha256(json.Password)
-
-	if encryptErr != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": encryptErr.Error()})
-		return
-	}
-
-	qs := u.UserQuerySet
+	qs := u.ProjectQuerySet
 	err := qs.InsertOne(json)
 
 	if err != nil {
@@ -90,15 +80,15 @@ func (u UserController) insertUser(c *gin.Context) {
 
 }
 
-func (u UserController) insertUserMany(c *gin.Context) {
-	var json *[]model.User
+func (u ProjectController) insertProjectMany(c *gin.Context) {
+	var json *[]model.Project
 
 	if err := c.ShouldBindJSON(&json); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	qs := u.UserQuerySet
+	qs := u.ProjectQuerySet
 	err := qs.InsertMany(json)
 
 	if err != nil {
@@ -110,9 +100,9 @@ func (u UserController) insertUserMany(c *gin.Context) {
 
 }
 
-func (u UserController) deleteOne(c *gin.Context) {
+func (u ProjectController) deleteOne(c *gin.Context) {
 	id := c.Param("id")
-	qs := u.UserQuerySet
+	qs := u.ProjectQuerySet
 	err := qs.DeleteOne(id)
 
 	if err != nil {
@@ -123,10 +113,10 @@ func (u UserController) deleteOne(c *gin.Context) {
 	c.JSON(http.StatusOK, "success")
 }
 
-func (u UserController) updateOne(c *gin.Context) {
-	var json *model.UserForm
+func (u ProjectController) updateOne(c *gin.Context) {
+	var json *model.ProjectForm
 	id := c.Param("id")
-	qs := u.UserQuerySet
+	qs := u.ProjectQuerySet
 
 	if err := c.ShouldBindJSON(&json); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

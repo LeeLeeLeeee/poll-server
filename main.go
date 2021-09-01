@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 
+	"github.com/gin-contrib/cors"
 	g "github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/leeleeleeee/web-app/auth"
@@ -40,6 +41,7 @@ func main() {
 	if err != nil {
 		panic("Please create a .env file")
 	}
+
 	conf.RedisInit()
 
 	pg.ConnectDatabse()
@@ -47,6 +49,12 @@ func main() {
 	m.Gdb = pg.GetDB()
 	router := g.Default()
 	router.Use(Logger())
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:4200"},
+		AllowMethods:     []string{"GET", "POST", "PATCH", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Accept"},
+		AllowCredentials: true,
+	}))
 
 	defer func() {
 
@@ -55,8 +63,9 @@ func main() {
 	authorized := router.Group("/api/auth")
 	c.DoInit(authorized, auth.AuthController{})
 
-	api := router.Group("/api/v1", auth.CheckJwt())
+	api := router.Group("/api/v1")
 	c.DoInit(api, c.UserController{})
+	c.DoInit(api, c.ProjectController{}) //auto.CheckJwt()
 
 	router.Run(":8080")
 }
