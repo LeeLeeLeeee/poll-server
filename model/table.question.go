@@ -10,8 +10,7 @@ type Question struct {
 	ProjectId           string `gorm:"type:uuid"`
 	TaskId              uint   `gorm:"index"`
 	QuestionCode        string `gorm:"index"`
-	QuestionType        string `gorm:"type:smallint"`
-	QuestionTemplateId  uint
+	QuestionTypeId      string `gorm:"type:smallint"`
 	QuestionTitle       string
 	QuestionDescription string
 	IsActive            bool
@@ -20,9 +19,10 @@ type Question struct {
 	CreatedDate         time.Time `gorm:"autoCreateTime:milli"`
 	UpdatedDate         time.Time `gorm:"autoUpdateTime:milli"`
 
-	UserFkey    User    `gorm:"foreignKey:UserId"`
-	ProjectFkey Project `gorm:"foreignKey:ProjectId"`
-	TaskFkey    Task    `gorm:"foreignKey:TaskId"`
+	UserFkey         User         `gorm:"foreignKey:UserId"`
+	ProjectFkey      Project      `gorm:"foreignKey:ProjectId"`
+	TaskFkey         Task         `gorm:"foreignKey:TaskId"`
+	QuestionTypeFkey QuestionType `gorm:"foreignKey:QuestionTypeId"`
 }
 
 func (Question) TableName() string {

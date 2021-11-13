@@ -1,8 +1,7 @@
 package model
 
 type QuestionType struct {
-	ID       uint   `gorm:"primarykey"`
-	TypeCode uint   `gorm:"type:smallint"`
+	ID       uint   `gorm:"primarykey; type:smallint"`
 	TypeName string `gorm:"type:varchar(20)"`
 }
 

@@ -50,7 +50,7 @@ func (pg *Postgres) MigrateDatabase() {
 		migrator := tx.Migrator()
 		tableList := make([]interface{}, 0)
 		tableList = append(tableList, &User{}, &Project{}, &Task{}, &ExampleForm{}, &ExampleLogic{}, &FormAttr{})
-		tableList = append(tableList, &LogicConnection{}, &Logic{}, &Notice{}, &QuestionContent{}, &QuestionExtra{}, &QuestionLayout{}, &QuestionLogic{})
+		tableList = append(tableList, &LogicConnection{}, &Logic{}, &Notice{}, &QuestionContent{}, &QuestionLayout{}, &QuestionLogic{})
 		tableList = append(tableList, &QuestionTemplate{}, &QuestionType{}, &Question{}, &Static{})
 		err := migrator.AutoMigrate(tableList...)
 
