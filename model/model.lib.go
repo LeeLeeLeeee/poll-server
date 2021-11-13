@@ -3,8 +3,8 @@ package model
 import "gorm.io/gorm"
 
 type Pagetype struct {
-	PageSize int `form:"page_size"`
-	Page     int `form:"page"`
+	PageSize int `form:"page_size" validate:"required"`
+	Page     int `form:"page" validate:"required"`
 }
 
 var defaultPageInfo = &Pagetype{

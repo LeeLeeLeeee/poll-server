@@ -13,15 +13,13 @@ type ProjectForm struct {
 	ProjectTitle       string `json:"projectTitle" form:"projectTitle"`
 	RegisterId         uint   `json:"registerId" form:"registerId"`
 	ProjectDescription string `json:"projectDescription" form:"projectDescription"`
+	TotalTask          string `json:"totalTask" form:"totalTask"`
+	EndTask            string `json:"endTask" form:"endTask"`
 }
 
 type PagingProjectForm struct {
 	TotalCount  int64          `json:"totalCount" form:"totalCount"`
 	ProjectForm *[]ProjectForm `json:"projectList" form:"projectList"`
-}
-
-func (ProjectForm) getTableName() string {
-	return "tb_project"
 }
 
 type ProjectQuerySet struct {
@@ -74,7 +72,20 @@ func (p ProjectQuerySet) Select(param interface{}) (res *PagingProjectForm, err 
 		}
 	}
 
-	result := Gdb.Scopes(Paginate(pt)).Table(p.getTableName()).Where(pf).Find(&project)
+	tx := Gdb.Scopes(Paginate(pt)).Table(p.getTableName())
+	tx.Select("id, start_date, end_date, project_title, register_id, project_description, project_status, b.total_task, b.end_task")
+	tx.Joins(`
+		left join (
+			select project_id, Count(*) as total_task,  
+			SUM(case when task_status = '3' then 1 else 0 end) as end_task
+			FROM tb_task
+			group by project_id
+		) as b 
+		on id = b.project_id
+	`)
+	tx.Where(pf).Order("created_date desc")
+
+	result := tx.Find(&project)
 
 	if result.Error != nil {
 		return nil, result.Error

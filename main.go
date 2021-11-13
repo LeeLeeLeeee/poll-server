@@ -66,6 +66,7 @@ func main() {
 	api := router.Group("/api/v1")
 	c.DoInit(api, c.UserController{})
 	c.DoInit(api, c.ProjectController{}) //auto.CheckJwt()
+	c.DoInit(api, c.TaskController{})    //auto.CheckJwt()
 
 	router.Run(":8080")
 }

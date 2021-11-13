@@ -7,6 +7,7 @@ import (
 type FormAttr struct {
 	ID             uint `gorm:"primarykey"`
 	QuestionId     uint `gorm:"index"`
+	ExampleId      uint `gorm:"index"`
 	AttrLabel      string
 	AttrLevel      uint `gorm:"type:smallint"`
 	AttrCode       uint `gorm:"type:smallint"`
@@ -14,7 +15,8 @@ type FormAttr struct {
 	CreatedDate    time.Time `gorm:"autoCreateTime:milli"`
 	UpdatedDate    time.Time `gorm:"autoUpdateTime:milli"`
 
-	QuestionFKey Question `gorm:"foreignKey:QuestionId"`
+	QuestionFKey Question    `gorm:"foreignKey:QuestionId"`
+	ExampleKey   ExampleForm `gorm:"foreignKey:ExampleId"`
 }
 
 func (FormAttr) TableName() string {
